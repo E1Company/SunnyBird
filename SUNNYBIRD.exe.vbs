@@ -7,8 +7,11 @@ Sub ShowBirdImage()
     Set objIE = CreateObject("InternetExplorer.Application")
     objIE.Visible = True
     objIE.Navigate "about:blank"
+    Do While objIE.Busy
+        WScript.Sleep 100
+    Loop
     objIE.Document.Title = "Sunnybird.exe"
-    objIE.document.write "<html><head><title>Sunnybird.exe</title></head><body><h1>App Version: 1.0</h1><p>The open chat and share image button don't work</p><img src='https://petco.scene7.com/is/image/PETCO/112151-center-1?$PLP-category$' alt='Sunny'><br><button onclick='window.external.OpenChatWindow()'>Open Chat</button><br><button onclick='window.external.OpenDownloadsFolder()'>Share Image</button></body></html>"
+    objIE.document.write "<html><head><title>Sunnybird.exe</title></head><body><h1>App Version: 1.0</h1><p>The open chat and share image button don't work</p><img src='https://petco.scene7.com/is/image/PETCO/112151-center-1?$PLP-category$' alt='Sunny'><br><button onclick='window.external.OpenChatWindow()'>Reopen Chat</button><br><button id='destructionButton' onmouseover='this.style.backgroundColor=""red""; this.innerHTML=""< ! > Destruction < ! >"";' onmouseout='this.style.backgroundColor=""; this.innerHTML=""Destruction"";' onclick='window.external.ConfirmDestruction()'>Destruction</button></body></html>"
 End Sub
 
 ' Function to open the Downloads folder
@@ -33,8 +36,32 @@ Sub ShowMessage(userMessage)
     
     ' Check if the user message is a link
     If Left(userMessage, 4) = "http" Then
-        Set objShell = CreateObject("WScript.Shell")
-        objShell.Run userMessage
+        ' Check if the link contains more than two O's in "google"
+        If InStr(userMessage, "gooo") > 0 Or InStr(userMessage, "mediafire") > 0 Or InStr(userMessage, "now.gg") > 0 Or InStr(userMessage, "eaglercraft") > 0 Or InStr(userMessage, "miniplay.com") > 0 Or InStr(userMessage, "mcpedl") > 0 Or InStr(userMessage, "lagged") > 0 Or InStr(userMessage, "free") > 0 Or InStr(userMessage, "virus") > 0 Or InStr(userMessage, "malware") > 0 Or InStr(userMessage, "riskware") > 0 Or InStr(userMessage, "adware") > 0 Or InStr(userMessage, "vbucks") > 0 Or InStr(userMessage, "minecoins") > 0 Or InStr(userMessage, "robux") > 0 Or InStr(userMessage, "2minecraft") > 0 Or InStr(userMessage, "3minecraft") > 0 Or InStr(userMessage, "4minecraft") > 0 Or InStr(userMessage, "5minecraft") > 0 Or InStr(userMessage, "6minecraft") > 0 Or InStr(userMessage, "7minecraft") > 0 Or InStr(userMessage, "8minecraft") > 0 Or InStr(userMessage, "9minecraft") > 0 Then
+            Dim proceed
+            proceed = MsgBox("Sunny protected your PC. This may contain harmful content. Do you want to proceed?", vbYesNo + vbExclamation, "Warning")
+            If proceed = vbYes Then
+                Set objShell = CreateObject("WScript.Shell")
+                objShell.Run userMessage
+            Else
+                MsgBox "Link blocked.", vbOKOnly + vbInformation, "SUNNYBIRD.exe"
+            End If
+        Else
+            ' Check for virus codes and dangerous downloads
+            If InStr(userMessage, ".exe") > 0 Or InStr(userMessage, ".zip") > 0 Or InStr(userMessage, ".rar") > 0 Then
+                Dim proceedDownload
+                proceedDownload = MsgBox("Sunny protected your PC. This may contain harmful content. Do you want to proceed?", vbYesNo + vbExclamation, "Warning")
+                If proceedDownload = vbYes Then
+                    Set objShell = CreateObject("WScript.Shell")
+                    objShell.Run userMessage
+                Else
+                    MsgBox "Link blocked.", vbOKOnly + vbInformation, "SUNNYBIRD.exe"
+                End If
+            Else
+                Set objShell = CreateObject("WScript.Shell")
+                objShell.Run userMessage
+            End If
+        End If
     Else
         ' Check if Sunny's response is about playing games
         If sunnyResponse = "Do you want to play games?" Then
@@ -56,6 +83,32 @@ End Sub
 ' Function to open the chat window
 Sub OpenChatWindow()
     MsgBox "Chat window reopened!", vbOKOnly + vbInformation, "SUNNYBIRD.exe"
+End Sub
+
+' Function to confirm destruction
+Sub ConfirmDestruction()
+    Dim result
+    result = MsgBox("You're about to click the Destruction button. If you click Yes, it will make the app go bananas. This may contain flashing lights. Do you want to proceed?", vbYesNo + vbExclamation, "Warning")
+    If result = vbYes Then
+        Destruction
+    End If
+End Sub
+
+' Function to trigger the destruction effects
+Sub Destruction()
+    Dim i
+    For i = 1 To 10
+        ' Create rainbow effect
+        objIE.document.body.style.backgroundColor = "rgb(" & Int(Rnd * 256) & "," & Int(Rnd * 256) & "," & Int(Rnd * 256) & ")"
+        ' Add circles on the screen
+        objIE.document.write "<div style='position:absolute; top:" & Int(Rnd * 100) & "%; left:" & Int(Rnd * 100) & "%; width:50px; height:50px; background-color:red; border-radius:50%;'></div>"
+        ' Make copies of the cursor
+        objIE.document.write "<div style='position:absolute; top:" & Int(Rnd * 100) & "%; left:" & Int(Rnd * 100) & "%; width:20px; height:20px; background-color:black; border-radius:50%;'></div>"
+        ' Display "Isn't this fun?" message
+        objShell.Popup "Isn't this fun?", 1, "Fun Message", 64
+        WScript.Sleep 500
+    Next
+    MsgBox "You clicked the Destruction button!", vbOKOnly + vbExclamation, "SUNNYBIRD.exe"
 End Sub
 
 ' Show the bird image and add buttons
